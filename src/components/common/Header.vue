@@ -4,10 +4,12 @@
        
          
         <div class="logo">
-            <span class="pic-box"><img src="../../assets/img/logo.png" class="logo-pic"/></span>
-            <span class="logo-text" v-show="lmenu">智学无忧教育</span>
-            </div>
-         <div class="collapse-btn" @click="collapseChage">
+            <el-menu  :collapse="collapse" class="sidebar-el-menu  logo">
+                <span class="pic-box"><img src="../../assets/img/logo.png" class="logo-pic"/></span>
+                <span class="logo-text">智学无忧教育</span>
+            </el-menu>
+        </div>
+        <div class="collapse-btn" @click="collapseChage">
             <i v-if="!collapse" class="el-icon-caret-left"></i>
             <i v-else class="el-icon-caret-right"></i>
         </div>
@@ -56,7 +58,6 @@ import bus from '../common/bus';
 export default {
     data() {
         return {
-            lmenu:true,
             collapse: false,
             fullscreen: false,
             name: 'linxin'
@@ -80,7 +81,6 @@ export default {
         collapseChage() {
             this.collapse = !this.collapse;
             bus.$emit('collapse', this.collapse);
-            this.lmenu =!this.lmenu
         },
         // 全屏事件
         handleFullScreen() {
@@ -209,5 +209,8 @@ export default {
 }
 .el-dropdown-menu__item {
     text-align: center;
+}
+.sidebar-el-menu:not(.el-menu--collapse) {
+    width: 250px;
 }
 </style>

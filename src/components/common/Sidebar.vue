@@ -5,7 +5,7 @@
             :default-active="onRoutes"
             :collapse="collapse"
             background-color="#324157"
-            text-color="#bfcbd9"
+            text-color="#ffffff"
             active-text-color="#20a0ff"
             unique-opened
             router
@@ -110,11 +110,11 @@ export default {
                     title: '在线测试',
                     subs: [
                         {
-                            index: 'paper',
+                            index: 'Paper',
                             title: '老师出卷'
                         },
                         {
-                            index: 'papermannagement',
+                            index: 'PaperMannagement',
                             title: '试卷管理'
                         },
                         {
@@ -122,11 +122,11 @@ export default {
                             title: '安排测试'
                         },
                         {
-                            index: 'readpaper',
+                            index: 'Readpaper',
                             title: '批阅试卷'
                         },
                         {
-                            index: 'testgrade',
+                            index: 'TestgRade',
                             title: '测试成绩'
                         }
                     ]
@@ -194,5 +194,8 @@ export default {
 }
 .is-active{
     color: #FFEB3A !important;
+}
+.el-icon-menu{
+    color: #ffffff;
 }
 </style>

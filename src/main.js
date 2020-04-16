@@ -3,15 +3,23 @@ import App from './App.vue';
 import router from './router';
 import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
+import  axios from 'axios';
+import VueAxios from 'vue-axios';
 import { messages } from './components/common/i18n';
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
+import 'element-ui/lib/theme-chalk/display.css';//某些条件下隐藏元素
 // import './assets/css/theme-green/index.css'; // 浅绿色主题
 import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 
+axios.defaults.baseURL='http://192.168.1.188:12'   //默认请求地址
+axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded' //默认请求头
+
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
+Vue.use(VueAxios, axios);
+
 Vue.use(ElementUI, {
     size: 'small'
 });
