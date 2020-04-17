@@ -1,0 +1,9 @@
+@media screen and (max-width: 750px) {
+    .ms-login{
+        flex-wrap: wrap;
+    }
+    .login-logo {
+        border-bottom: 1px solid transparent;
+        border-image: linear-gradient(to bottom, #fbfbfb, #36a85f, #fbfbfb) 1 1;
+    }
+}

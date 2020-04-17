@@ -5,7 +5,7 @@
          
         <div class="logo">
             <el-menu  :collapse="collapse" class="sidebar-el-menu  logo">
-                <span class="pic-box"><img src="../../assets/img/logo.png" class="logo-pic"/></span>
+                <span class="pic-box"><img src="../assets/img/logo.png" class="logo-pic"/></span>
                 <span class="logo-text">智学无忧教育</span>
             </el-menu>
         </div>
@@ -36,7 +36,7 @@
                 </div> -->
                 <!-- 用户头像 -->
                 <div class="user-avator">
-                    <img src="../../assets/img/user.png" />
+                    <img :src="userpic" />
                 </div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
@@ -54,13 +54,14 @@
     </div>
 </template>
 <script>
-import bus from '../common/bus';
+import bus from '../utils/bus';
 export default {
     data() {
         return {
             collapse: false,
             fullscreen: false,
-            name: 'linxin'
+            name: 'admin',
+            userpic:''
         };
     },
     computed: {
@@ -73,7 +74,7 @@ export default {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
+                localStorage.removeItem('username');
                 this.$router.push('/login');
             }
         },
@@ -114,6 +115,10 @@ export default {
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
+    },
+    created(){
+       this.name = localStorage.getItem('username')
+       this.userpic = localStorage.getItem('userpic')
     }
 };
 </script>

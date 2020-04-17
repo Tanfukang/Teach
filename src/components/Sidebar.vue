@@ -50,27 +50,12 @@
 </template>
 
 <script>
-import bus from '../common/bus';
+import bus from '../utils/bus';
 export default {
     data() {
         return {
             collapse: false,
             items: [
-                // {
-                //     icon: 'el-icon-lx-home',
-                //     index: 'dashboard',
-                //     title: '系统首页'
-                // },
-                // {
-                //     icon: 'el-icon-lx-cascades',
-                //     index: 'table',
-                //     title: '基础表格'
-                // },
-                // {
-                //     icon: 'el-icon-lx-copy',
-                //     index: 'tabs',
-                //     title: 'tab选项卡'
-                // },
                 {
                     icon: 'el-icon-menu',
                     index: '3',
@@ -94,16 +79,6 @@ export default {
                         }
                     ]
                 },
-                // {
-                //     icon: 'el-icon-lx-emoji',
-                //     index: 'icon',
-                //     title: '自定义图标'
-                // },
-                // {
-                //     icon: 'el-icon-pie-chart',
-                //     index: 'charts',
-                //     title: 'schart图表'
-                // },
                 {
                     icon: 'el-icon-menu',
                     index: '6',
@@ -130,38 +105,15 @@ export default {
                             title: '测试成绩'
                         }
                     ]
-                },
-                // {
-                //     icon: 'el-icon-lx-global',
-                //     index: 'i18n',
-                //     title: '国际化功能'
-                // },
-                // {
-                //     icon: 'el-icon-lx-warn',
-                //     index: '7',
-                //     title: '错误处理',
-                //     subs: [
-                //         {
-                //             index: 'permission',
-                //             title: '权限测试'
-                //         },
-                //         {
-                //             index: '404',
-                //             title: '404页面'
-                //         }
-                //     ]
-                // },
-                // {
-                //     icon: 'el-icon-lx-redpacket_fill',
-                //     index: '/donate',
-                //     title: '支持作者'
-                // }
+                }
             ]
         };
     },
     computed: {
         onRoutes() {
+            console.log(this.$route.path.replace('/', ''))
             return this.$route.path.replace('/', '');
+            
         }
     },
     created() {

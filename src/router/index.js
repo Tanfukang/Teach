@@ -12,107 +12,65 @@ export default new Router({
         },
         {
             path: '/',
-            component: () => import(/* webpackChunkName: "home" */ '../components/common/Home.vue'),
+            component: () => import(/* webpackChunkName: "home" */ '../views/back/Home'),
             meta: { title: '自述文件' },
             children: [
                 {
                     path: '/ClassMannagement',
-                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/common/ClassMannagement.vue'),
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/ClassMannagement.vue'),
                     meta: { title: '班级管理' }
                 },
                 {
                     path: '/StudentMannagement',
-                    component: () => import(/* webpackChunkName: "icon" */ '../components/common/StudentMannagement.vue'),
+                    component: () => import(/* webpackChunkName: "icon" */ '../components/StudentMannagement.vue'),
                     meta: { title: '学生管理' }
                 },
                 {
                     path: '/TeacherMannagement',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/common/TeacherMannagement.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/TeacherMannagement.vue'),
                     meta: { title: '老师管理' }
                 },
                 {
                     path: '/ChangePassword',
-                    component: () => import(/* webpackChunkName: "tabs" */ '../components/common/ChangePassword.vue'),
+                    component: () => import(/* webpackChunkName: "tabs" */ '../components/ChangePassword.vue'),
                     meta: { title: '修改密码' }
                 },
                 {
                     path: '/Paper',
-                    component: () => import(/* webpackChunkName: "form" */ '../components/common/Paper.vue'),
+                    component: () => import(/* webpackChunkName: "form" */ '../components/Paper.vue'),
                     meta: { title: '老师出卷' }
                 },
                 {
                     // 试卷管理
                     path: '/PaperMannagement',
-                    component: () => import(/* webpackChunkName: "editor" */ '../components/common/PaperMannagement.vue'),
+                    component: () => import(/* webpackChunkName: "editor" */ '../components/PaperMannagement.vue'),
                     meta: { title: '试卷管理' }
                 },
                 {
                     // 安排测试
                     path: '/OnTest',
-                    component: () => import(/* webpackChunkName: "markdown" */ '../components/common/OnTest.vue'),
+                    component: () => import(/* webpackChunkName: "markdown" */ '../components/OnTest.vue'),
                     meta: { title: '安排测试' }
                 },
                 {
                     // 批阅试卷
                     path: '/ReadPaper',
-                    component: () => import(/* webpackChunkName: "upload" */ '../components/common/ReadPaper.vue'),
+                    component: () => import(/* webpackChunkName: "upload" */ '../components/ReadPaper.vue'),
                     meta: { title: '批阅试卷' }
                 },
                 {
                     // 测试成绩
                     path: '/TestgRade',
-                    component: () => import(/* webpackChunkName: "chart" */ '../components/common/TestgRade.vue'),
+                    component: () => import(/* webpackChunkName: "chart" */ '../components/TestgRade.vue'),
                     meta: { title: '测试成绩' }
                 }
-                // {
-                //     // 拖拽列表组件
-                //     path: '/drag',
-                //     component: () => import(/* webpackChunkName: "drag" */ '../components/page/DragList.vue'),
-                //     meta: { title: '拖拽列表' }
-                // },
-                // {
-                //     // 拖拽Dialog组件
-                //     path: '/dialog',
-                //     component: () => import(/* webpackChunkName: "dragdialog" */ '../components/page/DragDialog.vue'),
-                //     meta: { title: '拖拽弹框' }
-                // },
-                // {
-                //     // 国际化组件
-                //     path: '/i18n',
-                //     component: () => import(/* webpackChunkName: "i18n" */ '../components/page/I18n.vue'),
-                //     meta: { title: '国际化' }
-                // },
-                // {
-                //     // 权限页面
-                //     path: '/permission',
-                //     component: () => import(/* webpackChunkName: "permission" */ '../components/page/Permission.vue'),
-                //     meta: { title: '权限测试', permission: true }
-                // },
-                // {
-                //     path: '/404',
-                //     component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),
-                //     meta: { title: '404' }
-                // },
-                // {
-                //     path: '/403',
-                //     component: () => import(/* webpackChunkName: "403" */ '../components/page/403.vue'),
-                //     meta: { title: '403' }
-                // },
-                // {
-                //     path: '/donate',
-                //     component: () => import(/* webpackChunkName: "donate" */ '../components/page/Donate.vue'),
-                //     meta: { title: '支持作者' }
-                // }
+            
             ]
         },
         {
             path: '/login',
-            component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
+            component: () => import(/* webpackChunkName: "login" */ '../views/back/Login'),
             meta: { title: '登录' }
-        },
-        {
-            path: '*',
-            redirect: '/404'
         }
     ]
 });
