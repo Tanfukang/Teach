@@ -60,7 +60,7 @@
                         <el-input v-model="form.name" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="专业课程" :label-width="formLabelWidth">
-                        <el-select v-model="form.course" placeholder="请选择">
+                        <el-select v-model="form.classCourseId" placeholder="请选择">
                             <el-option
                                 :label="item.courseName"
                                 :value="item.courseId"
@@ -70,7 +70,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="授课老师" :label-width="formLabelWidth">
-                        <el-select v-model="form.teacher" placeholder="请选择">
+                        <el-select v-model="form.teacherId" placeholder="请选择">
                             <el-option :label="item.userName" :value="item.userId" v-for="item in Teacher" :key="item.userId"></el-option>
                         </el-select>
                     </el-form-item>
@@ -119,19 +119,19 @@ export default {
             this.oper = '添加';
             this.dialogFormVisible = true;
             this.form.name = '';
-            this.form.course = '';
-            this.form.teacher = '';
+            this.form.classCourseId = '';
+            this.form.teacherId = '';
         },
         submit(form) {
             if (this.oper === '添加') {
-                if ((form.name && form.course && form.teacher) === '') {
+                if ((form.name && form.classCourseId && form.teacherId) === '') {
                     this.$message.error('请提交完整的班级信息');
                 } else {
                     this.axios
                         .post('/api/Class/AddClass', {
                             className: form.name,
-                            classCourseId: form.course,
-                            classTeacherId: form.teacher
+                            classCourseId: form.classCourseId,
+                            classTeacherId: form.teacherId
                         })
                         .then(res => {
                             if (res.data.code === 1) {
@@ -153,6 +153,10 @@ export default {
                         .catch(error => {});
                 }
             } else {
+                console.log({classId: this.form.classId,
+                        className: form.name,
+                        classCourseId: this.form.classCourseId,
+                        classTeacherId: this.form.teacherId})
                 this.axios
                     .post('/api/Class/ModifyClass', {
                         classId: this.form.classId,
@@ -161,6 +165,8 @@ export default {
                         classTeacherId: this.form.teacherId
                     })
                     .then(res => {
+                        console.log(res.data);
+                        
                         if (res.data.code === 0) {
                             this.$message.warning('数据没有变成');
                             return false;
