@@ -111,7 +111,7 @@ export default {
     },
     computed: {
         onRoutes() {
-            console.log(this.$route.path.replace('/', ''))
+
             return this.$route.path.replace('/', '');
             
         }

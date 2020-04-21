@@ -85,6 +85,7 @@ export default {
                         })
                         .then(res => {
                             let Userinfo = JSON.stringify(this.param);
+                            let Udata = JSON.stringify(res.data.profile);
                             if (res.status === 200) {
                                 if (this.checked) {
                                     // 对账号密码加密并存入cookie
@@ -93,8 +94,7 @@ export default {
                                 _this.userToken = res.data.token_type + ' ' + res.data.access_token;
                                 this.$message.success('登录成功');
                                 sessionStorage.setItem('userToken', _this.userToken);
-                                sessionStorage.setItem('username', res.data.profile.userName);
-                                localStorage.setItem('userpic', res.data.profile.userHeader);
+                                sessionStorage.setItem('userData',Udata);
                                 setTimeout(() => {
                                     this.logining = false;
                                     this.$router.push({ path: '/' });
@@ -113,6 +113,16 @@ export default {
                     return false;
                 }
             });
+        }
+    },
+    created () {
+        /** 获取记住密码的账号密码 */
+        let cookie = this.Cookie.getCookie('user');
+        if(cookie){
+            let jie = this.Base64.decode(cookie);
+            let up = JSON.parse((jie));
+            this.param.username = up.username;
+            this.param.password = up.password;
         }
     }
 };

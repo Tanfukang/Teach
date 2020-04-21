@@ -2,11 +2,11 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import ElementUI from 'element-ui';
-import  axios from 'axios';
+import axios from 'axios';
 import VueAxios from 'vue-axios';
 import store from './store';
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
-import 'element-ui/lib/theme-chalk/display.css';//某些条件下隐藏元素
+import 'element-ui/lib/theme-chalk/display.css'; //某些条件下隐藏元素
 import './assets/css/icon.css';
 import 'babel-polyfill';
 import Cookie from './utils/Cookie.js';
@@ -14,8 +14,13 @@ import Base64 from './utils/Base64.js';
 Vue.prototype.Cookie = Cookie;
 Vue.prototype.Base64 = Base64;
 
-axios.defaults.baseURL='http://192.168.1.188:12'   //默认请求地址
-axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded' //默认请求头
+axios.defaults.baseURL = 'http://192.168.1.188:12' //默认请求地址
+// axios.defaults.headers.authorization = 'application/x-www-form-urlencoded' //默认请求头
+
+let token = sessionStorage.getItem('userToken')
+if (token) {
+    axios.defaults.headers.authorization = token
+}
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
@@ -27,7 +32,7 @@ Vue.use(ElementUI, {
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | 教学管理系统`;
-    const role = sessionStorage.getItem('username');
+    const role = sessionStorage.getItem('userData');
     if (!role && to.path !== '/login') {
         next('/login');
     } else if (to.meta.permission) {

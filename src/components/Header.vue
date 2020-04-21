@@ -3,7 +3,7 @@
         <!-- 折叠按钮 -->
        
          
-        <div class="logo">
+        <div class="logo"  @click="index()">
             <el-menu  :collapse="collapse" class="sidebar-el-menu  logo">
                 <span class="pic-box"><img src="../assets/img/logo.png" class="logo-pic"/></span>
                 <span class="logo-text">智学无忧教育</span>
@@ -74,7 +74,7 @@ export default {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
-                localStorage.removeItem('username');
+                sessionStorage.removeItem('userData');
                 this.$router.push('/login');
             }
         },
@@ -109,16 +109,21 @@ export default {
                 }
             }
             this.fullscreen = !this.fullscreen;
+        },
+        index(){
+            this.$router.push({ path: '/' });
         }
     },
     mounted() {
         if (document.body.clientWidth < 1500) {
             this.collapseChage();
         }
-    },
+    },  
     created(){
-       this.name = localStorage.getItem('username')
-       this.userpic = localStorage.getItem('userpic')
+        let data = sessionStorage.getItem('userData');
+        let userinfo = JSON.parse((data));
+        this.name = userinfo.userName;
+        this.userpic = userinfo.userHeader;
     }
 };
 </script>
