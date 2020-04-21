@@ -58,8 +58,8 @@ export default {
             },
             rules: {
                 username: [
-                    { required: true, message: '请输入用户名', trigger: 'blur' },
-                    { required: true, validator: checkPhone, trigger: 'blur' }
+                    { required: true, message: '请输入用户名', trigger: 'blur' },  
+                    { required: true, validator: checkPhone, trigger: 'blur' } 
                 ],
                 password: [
                     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -71,22 +71,30 @@ export default {
         };
     },
     methods: {
-        submitForm(param) {
+        submitForm(param) { 
             let _this = this;
             this.$refs.login.validate(valid => {
-                if (valid) {
+                if (valid) {//这里为true
                     this.logining = true;
-                    _this.axios
-                        .get('/api/OAuth/authenticate', {
-                            params: {
-                                userMobile: _this.param.username,
-                                userPassword: _this.param.password
-                            }
-                        })
+                    this.request({
+                        url: '/api/OAuth/authenticate',
+                        method: 'GET',
+                        params: {
+                            userMobile: _this.param.username,
+                            userPassword: _this.param.password
+                        }
+                    })
+                        // _this.axios
+                        //     .get('/api/OAuth/authenticate', {
+                        //         params: {
+                        //             userMobile: _this.param.username,
+                        //             userPassword: _this.param.password
+                        //         }
+                        //     })
                         .then(res => {
                             let Userinfo = JSON.stringify(this.param);
                             let Udata = JSON.stringify(res.data.profile);
-                            if (res.status === 200) {
+                            //if (res.status === 200) {那你这里就不用判断了
                                 if (this.checked) {
                                     // 对账号密码加密并存入cookie
                                     this.Cookie.setCookie('user', this.Base64.encode(Userinfo), 60 * 60 * 24 * 3);
@@ -94,20 +102,20 @@ export default {
                                 _this.userToken = res.data.token_type + ' ' + res.data.access_token;
                                 this.$message.success('登录成功');
                                 sessionStorage.setItem('userToken', _this.userToken);
-                                sessionStorage.setItem('userData',Udata);
+                                sessionStorage.setItem('userData', Udata);
                                 setTimeout(() => {
                                     this.logining = false;
                                     this.$router.push({ path: '/' });
                                 }, 1000);
-                            } else {
-                                return false;
-                            }
+                            //} else {
+                            //    return false;
+                            //}
                         })
                         .catch(error => {
+                            this.$message.warning('账号密码错误');
                             setTimeout(() => {
                                 this.logining = false;
                             }, 2000);
-                            this.$message.warning('账号密码错误');
                         });
                 } else {
                     return false;
@@ -115,12 +123,12 @@ export default {
             });
         }
     },
-    created () {
+    created() {
         /** 获取记住密码的账号密码 */
         let cookie = this.Cookie.getCookie('user');
-        if(cookie){
+        if (cookie) {
             let jie = this.Base64.decode(cookie);
-            let up = JSON.parse((jie));
+            let up = JSON.parse(jie);
             this.param.username = up.username;
             this.param.password = up.password;
         }

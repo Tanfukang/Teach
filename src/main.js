@@ -11,16 +11,22 @@ import './assets/css/icon.css';
 import 'babel-polyfill';
 import Cookie from './utils/Cookie.js';
 import Base64 from './utils/Base64.js';
+import { request }  from './api/request.js';
+
+Vue.prototype.request = request;
 Vue.prototype.Cookie = Cookie;
 Vue.prototype.Base64 = Base64;
+// Vue.prototype.service = service;
 
-axios.defaults.baseURL = 'http://192.168.1.188:12' //默认请求地址
+
+
+// axios.defaults.baseURL = 'http://192.168.1.188:12' //默认请求地址
 // axios.defaults.headers.authorization = 'application/x-www-form-urlencoded' //默认请求头
 
-let token = sessionStorage.getItem('userToken')
-if (token) {
-    axios.defaults.headers.authorization = token
-}
+// let token = sessionStorage.getItem('userToken')
+// if (token) {
+//     axios.defaults.headers.authorization = token
+// }
 
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);

@@ -264,12 +264,11 @@ export default {
         _this.axios
             .get('/api/User/GetTeachers')
             .then(res => {
-                console.log(res.data);
                 this.Teacher = res.data;
             })
             .catch(error => {});
     }
-};
+}; 
 </script>
 
 <style scoped>
