@@ -94,22 +94,20 @@ export default {
                         .then(res => {
                             let Userinfo = JSON.stringify(this.param);
                             let Udata = JSON.stringify(res.data.profile);
-                            //if (res.status === 200) {那你这里就不用判断了
                                 if (this.checked) {
                                     // 对账号密码加密并存入cookie
                                     this.Cookie.setCookie('user', this.Base64.encode(Userinfo), 60 * 60 * 24 * 3);
+                                }else{
+                                    this.Cookie.removeCookie('user');
                                 }
-                                _this.userToken = res.data.token_type + ' ' + res.data.access_token;
+                                let userToken = res.data.token_type + ' ' + res.data.access_token;
                                 this.$message.success('登录成功');
-                                sessionStorage.setItem('userToken', _this.userToken);
+                                localStorage.setItem('userToken', userToken);
                                 sessionStorage.setItem('userData', Udata);
                                 setTimeout(() => {
                                     this.logining = false;
                                     this.$router.push({ path: '/' });
                                 }, 1000);
-                            //} else {
-                            //    return false;
-                            //}
                         })
                         .catch(error => {
                             this.$message.warning('账号密码错误');

@@ -10,8 +10,8 @@ import 'element-ui/lib/theme-chalk/display.css'; //某些条件下隐藏元素
 import './assets/css/icon.css';
 import 'babel-polyfill';
 import Cookie from './utils/Cookie.js';
-import Base64 from './utils/Base64.js';
-import { request }  from './api/request.js';
+import Base64 from './utils/Base64.js';         //加解密
+import { request }  from './api/request.js';    //请求
 
 Vue.prototype.request = request;
 Vue.prototype.Cookie = Cookie;
