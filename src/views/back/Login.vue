@@ -4,24 +4,25 @@
             <!-- 登陆logo容器 -->
             <div class="login-logo">
                 <div class="logo-pic">
-                    <img src="../../assets/img/login-logo.png" alt="" />
+                    <img src="../../assets/img/login-logo.png" alt />
                 </div>
-                <div class="login-title">
-                    智学无忧后台系统
-                </div>
-                <div class="login-text">
-                    做最有态度、责任、良心的IT教育
-                </div>
+                <div class="login-title">智学无忧后台系统</div>
+                <div class="login-text">做最有态度、责任、良心的IT教育</div>
             </div>
             <!-- 登陆容器 -->
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content ">
+            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
                     <el-input v-model="param.username" placeholder="用户名" maxlength="11">
                         <el-button slot="prepend" icon="el-icon-user-solid"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="密码" v-model="param.password" @keyup.enter.native="submitForm()">
+                    <el-input
+                        type="password"
+                        placeholder="密码"
+                        v-model="param.password"
+                        @keyup.enter.native="submitForm()"
+                    >
                         <el-button slot="prepend" icon="el-icon-lock"></el-button>
                     </el-input>
                 </el-form-item>
@@ -35,6 +36,7 @@
 </template>
 
 <script>
+import request from '../../api/Login';
 export default {
     data() {
         // 账号验证正则
@@ -58,8 +60,8 @@ export default {
             },
             rules: {
                 username: [
-                    { required: true, message: '请输入用户名', trigger: 'blur' },  
-                    { required: true, validator: checkPhone, trigger: 'blur' } 
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { required: true, validator: checkPhone, trigger: 'blur' }
                 ],
                 password: [
                     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -71,43 +73,33 @@ export default {
         };
     },
     methods: {
-        submitForm(param) { 
+        submitForm(param) {
             let _this = this;
             this.$refs.login.validate(valid => {
-                if (valid) {//这里为true
+                if (valid) {
+                    //这里为true
                     this.logining = true;
-                    this.request({
-                        url: '/api/OAuth/authenticate',
-                        method: 'GET',
-                        params: {
-                            userMobile: _this.param.username,
-                            userPassword: _this.param.password
-                        }
+                    request.Login({
+                        userMobile: _this.param.username,
+                        userPassword: _this.param.password
                     })
-                        // _this.axios
-                        //     .get('/api/OAuth/authenticate', {
-                        //         params: {
-                        //             userMobile: _this.param.username,
-                        //             userPassword: _this.param.password
-                        //         }
-                        //     })
                         .then(res => {
                             let Userinfo = JSON.stringify(this.param);
                             let Udata = JSON.stringify(res.data.profile);
-                                if (this.checked) {
-                                    // 对账号密码加密并存入cookie
-                                    this.Cookie.setCookie('user', this.Base64.encode(Userinfo), 60 * 60 * 24 * 3);
-                                }else{
-                                    this.Cookie.removeCookie('user');
-                                }
-                                let userToken = res.data.token_type + ' ' + res.data.access_token;
-                                this.$message.success('登录成功');
-                                localStorage.setItem('userToken', userToken);
-                                sessionStorage.setItem('userData', Udata);
-                                setTimeout(() => {
-                                    this.logining = false;
-                                    this.$router.push({ path: '/' });
-                                }, 1000);
+                            if (this.checked) {
+                                // 对账号密码加密并存入cookie
+                                this.Cookie.setCookie('user', this.Base64.encode(Userinfo), 60 * 60 * 24 * 3);
+                            } else {
+                                this.Cookie.removeCookie('user');
+                            }
+                            let userToken = res.data.token_type + ' ' + res.data.access_token;
+                            this.$message.success('登录成功');
+                            localStorage.setItem('userToken', userToken);
+                            sessionStorage.setItem('userData', Udata);
+                            setTimeout(() => {
+                                this.logining = false;
+                                this.$router.push({ path: '/' });
+                            }, 1000);
                         })
                         .catch(error => {
                             this.$message.warning('账号密码错误');

@@ -101,6 +101,7 @@
 <script>
 
 import { formatDate } from '../../../utils/data';
+import request from '../../../api/Class';
 export default {
     name: '',
     data() {
@@ -140,8 +141,7 @@ export default {
         },
         //添加后提交
         addSubmit(form) {
-            this.axios
-                .post('/api/Class/AddClass', {
+                request.AddClass({
                     className: form.name,
                     classCourseId: form.classCourseId,
                     classTeacherId: form.teacherId
@@ -150,12 +150,8 @@ export default {
                     if (res.data.code === 1) {
                         this.$message.success('添加成功');
                         let Classid = res.data.data.classId;
-                        console.log(Classid);
-                        this.axios
-                            .get('/api/Class/GetAllClass', {
-                                params: {
-                                    classId: Classid
-                                }
+                            request.ClassAll({
+                                classId:Classid
                             })
                             .then(res => {
                                 this.tableData = res.data;
@@ -179,8 +175,7 @@ export default {
         },
         //修改后提交
         alterSubmit(form) {
-            this.axios
-                .post('/api/Class/ModifyClass', {
+                request.AlterClass({
                     classId: this.form.classId,
                     className: form.name,
                     classCourseId: this.form.classCourseId,
@@ -192,11 +187,8 @@ export default {
                         return false;
                     } else if (res.data.code === 1) {
                         this.$message.success('修改成功');
-                        this.axios
-                            .get('/api/Class/GetAllClass', {
-                                params: {
-                                    classId: this.form.classId
-                                }
+                            request.ClassAll({
+                                classId: this.form.classId
                             })
                             .then(res => {
                                 this.tableData = res.data;
@@ -246,8 +238,6 @@ export default {
                             return;
                         })
                         .catch(error => {
-                            console.log('aaa');
-                            console.log(error);
                             this.$message({
                                 type: 'info',
                                 message: '删除失败'
@@ -255,8 +245,6 @@ export default {
                         });
                 })
                 .catch(error => {
-                    console.log('aaa');
-                    console.log(error);
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
@@ -275,22 +263,19 @@ export default {
     created() {
         let _this = this;
         //获取所有的班级信息
-        _this.axios
-            .get('/api/Class/GetAllClass')
+            request.ClassAll()
             .then(res => {
                 this.tableData = res.data;
             })
             .catch(error => {});
         //获取所有的课程
-        _this.axios
-            .get('/api/Class/GetAllCourse')
+            request.AllCourse()
             .then(res => {
                 this.allLessons = res.data;
             })
             .catch(error => {});
         //获取所有老师
-        _this.axios
-            .get('/api/User/GetTeachers')
+            request.Allteacher()
             .then(res => {
                 this.Teacher = res.data;
             })
