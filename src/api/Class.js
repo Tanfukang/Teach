@@ -2,7 +2,7 @@ import request from './request';
 
 let ajax = new request();
 
-export default ({
+export default {
     // 获取所有的班级信息
     ClassAll(params){
         return ajax.get('/api/Class/GetAllClass',params)
@@ -22,5 +22,9 @@ export default ({
     //修改班级
     AlterClass(data){
         return ajax.post('/api/Class/ModifyClass',data)
+    },
+    // 删除班级
+    DeleteClass(params){
+        return ajax.get('/api/Class/RemoveClass',params)
     }
-})
+}

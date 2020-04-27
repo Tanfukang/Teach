@@ -70,8 +70,12 @@ export default {
                             title: '学生管理'
                         },
                         {
-                            index: 'TeacherMannagement',
-                            title: '老师管理'
+                            index: 'UserMannagement',
+                            title: '用户管理'
+                        },
+                        {
+                            index: 'RoleMannagement',
+                            title: '角色管理'
                         },
                         {
                             index: 'ChangePassword',

@@ -39,9 +39,7 @@
                     </el-table-column>
                     <el-table-column label="开班日期">
                         <template slot-scope="scope">
-                            <span
-                                style="margin-left: 10px"
-                            >{{ scope.row.classCreateTime | formatDate }}</span>
+                            <span style="margin-left: 10px">{{ scope.row.classCreateTime | formatDate }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
@@ -52,20 +50,16 @@
                                 type="danger"
                                 @click="handleDelete(scope.$index, scope.row)"
                                 :disabled="scope.row.classStudents > 0 ? true : false"
-                            >删除</el-button>
+                                >删除</el-button
+                            >
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
         </el-card>
 
-        <el-dialog
-            :title="titleMap[dialogStatus]"
-            :visible.sync="dialogFormVisible"
-            center
-            width="20%"
-        >
-            <el-form :model="form" class="demo-ruleForm">
+        <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogFormVisible" center width="20%">
+            <el-form :model="form" class="demo-ruleForm" status-icon>
                 <el-form-item label="班级名称" :label-width="formLabelWidth">
                     <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
@@ -81,12 +75,7 @@
                 </el-form-item>
                 <el-form-item label="授课老师" :label-width="formLabelWidth">
                     <el-select v-model="form.teacherId" placeholder="请选择">
-                        <el-option
-                            :label="item.userName"
-                            :value="item.userId"
-                            v-for="item in Teacher"
-                            :key="item.userId"
-                        ></el-option>
+                        <el-option :label="item.userName" :value="item.userId" v-for="item in Teacher" :key="item.userId"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -99,7 +88,6 @@
 </template>
 
 <script>
-
 import { formatDate } from '../../../utils/data';
 import request from '../../../api/Class';
 export default {
@@ -141,7 +129,8 @@ export default {
         },
         //添加后提交
         addSubmit(form) {
-                request.AddClass({
+            request
+                .AddClass({
                     className: form.name,
                     classCourseId: form.classCourseId,
                     classTeacherId: form.teacherId
@@ -150,8 +139,9 @@ export default {
                     if (res.data.code === 1) {
                         this.$message.success('添加成功');
                         let Classid = res.data.data.classId;
-                            request.ClassAll({
-                                classId:Classid
+                        request
+                            .ClassAll({
+                                classId: Classid
                             })
                             .then(res => {
                                 this.tableData = res.data;
@@ -175,7 +165,8 @@ export default {
         },
         //修改后提交
         alterSubmit(form) {
-                request.AlterClass({
+            request
+                .AlterClass({
                     classId: this.form.classId,
                     className: form.name,
                     classCourseId: this.form.classCourseId,
@@ -187,7 +178,8 @@ export default {
                         return false;
                     } else if (res.data.code === 1) {
                         this.$message.success('修改成功');
-                            request.ClassAll({
+                        request
+                            .ClassAll({
                                 classId: this.form.classId
                             })
                             .then(res => {
@@ -221,12 +213,9 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    console.log(row.classId);
-                    this.axios
-                        .get('/api/Class/RemoveClass', {
-                            params: {
-                                classId: row.classId
-                            }
+                    request
+                        .DeleteClass({
+                            classId: row.classId
                         })
                         .then(res => {
                             if (res.data.code === 1) {
@@ -263,19 +252,22 @@ export default {
     created() {
         let _this = this;
         //获取所有的班级信息
-            request.ClassAll()
+        request
+            .ClassAll()
             .then(res => {
                 this.tableData = res.data;
             })
             .catch(error => {});
         //获取所有的课程
-            request.AllCourse()
+        request
+            .AllCourse()
             .then(res => {
                 this.allLessons = res.data;
             })
             .catch(error => {});
         //获取所有老师
-            request.Allteacher()
+        request
+            .Allteacher()
             .then(res => {
                 this.Teacher = res.data;
             })

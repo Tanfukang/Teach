@@ -10,7 +10,14 @@
                 <div class="login-text">做最有态度、责任、良心的IT教育</div>
             </div>
             <!-- 登陆容器 -->
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+            <el-form
+                :model="param"
+                :rules="rules"
+                ref="login"
+                label-width="0px"
+                class="ms-content"
+                status-icon
+            >
                 <el-form-item prop="username">
                     <el-input v-model="param.username" placeholder="用户名" maxlength="11">
                         <el-button slot="prepend" icon="el-icon-user-solid"></el-button>
@@ -79,10 +86,11 @@ export default {
                 if (valid) {
                     //这里为true
                     this.logining = true;
-                    request.Login({
-                        userMobile: _this.param.username,
-                        userPassword: _this.param.password
-                    })
+                    request
+                        .Login({
+                            userMobile: _this.param.username,
+                            userPassword: _this.param.password
+                        })
                         .then(res => {
                             let Userinfo = JSON.stringify(this.param);
                             let Udata = JSON.stringify(res.data.profile);

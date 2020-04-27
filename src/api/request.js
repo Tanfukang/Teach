@@ -90,7 +90,7 @@ axios.interceptors.response.use(
             switch (error.response.status) {
                 case 401:
                   let cookies = Cookies.getCookie(('user'))
-                    if (cookies) {
+                    if (cookies&&router.fullPath !== '/login') {
                         TokenData(error.config.url,cookies)
                         return axios(error.config)
                     } else {
@@ -102,6 +102,7 @@ axios.interceptors.response.use(
                             }
                         });
                     }
+                    break;
             }
         }
         return Promise.reject(error.response.data);
