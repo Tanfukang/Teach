@@ -22,5 +22,8 @@ export default {
     //修改老师
     AlterTeacher(data){
         return ajax.post('/api/User/ModifyTeacher',data)
-    }
+    },
+    OrderUerRoleNo(data){
+        return ajax.post('/api/UserType/OrderUerRoleNo',data)
+    },
 }

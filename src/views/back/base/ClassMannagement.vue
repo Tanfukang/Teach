@@ -88,8 +88,8 @@
 </template>
 
 <script>
-import { formatDate } from '../../../utils/data';
-import request from '../../../api/Class';
+import { formatDate } from '@/utils/data';
+import request from '@/api/Class';
 export default {
     name: '',
     data() {

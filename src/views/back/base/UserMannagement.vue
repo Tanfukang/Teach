@@ -13,7 +13,7 @@
                     <i class="el-icon-circle-plus-outline"></i>
                     新增用户
                 </el-button>
-                <el-radio-group v-model="radioi" @change="NavTab">
+                <el-radio-group v-model="radioi" @change="navTab">
                     <el-radio label="全部">全部</el-radio>
                     <el-radio :label="item" v-for="item in UserClass" :key="item.userTypeId">{{
                         item.userTypeTypeName
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import request from '../../../api/UserMannage';
+import request from '@/api/UserMannage';
 export default {
     data() {
         // 手机号验证正则
@@ -154,7 +154,7 @@ export default {
                     { min: 6, max: 18, message: '密码格式有误', trigger: 'blur' }
                 ],  
                 sex: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-                role: [{ required: true, message: '请选角色', trigger: 'change' }]
+                role: [{ required: true, message: '请选角色', trigger: 'blur' }]
             },
             formLabelWidth: '80px',
             index: '',
@@ -174,7 +174,7 @@ export default {
     },
     // 角色选项卡分类
     methods: {
-        NavTab(index){
+        navTab(index){
             console.log(this.radio)
             this.tab = index;
             if(index === "全部"){
@@ -202,8 +202,7 @@ export default {
             this.ruleForm.role = this.tab.userTypeId;
         },
         //新增提交
-        NewUser(formName) {
-            
+        newUser(formName) {
             request
                 .addUser({
                     userName: formName.name,
@@ -249,7 +248,7 @@ export default {
             this.index = index;
         },
         //修改提交
-        AlterUser(formName) {
+        alterUser(formName) {
             console.log(formName)
             request
                 .AlterTeacher({
@@ -292,9 +291,9 @@ export default {
             this.$refs.ruleForm.validate(valid => {
                 if (valid) {
                     if (this.oper === '添加') {
-                        this.NewUser(formName);
+                        this.newUser(formName);
                     } else {
-                        this.AlterUser(formName);
+                        this.alterUser(formName);
                     }
                 } else {
                     console.log('error submit!!');

@@ -3,8 +3,9 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-export default new Router({
+ const router = new Router({
     mode: "history",
+    base: process.env.BASE_URL,
     routes: [
         {
             path: '/login',
@@ -79,3 +80,16 @@ export default new Router({
         }
     ]
 });
+
+// 使用钩子函数对路由进行权限跳转
+router.beforeEach((to, from, next) => {
+    document.title = `${to.meta.title} | 教学管理系统`;
+    const role = localStorage.getItem('userToken');
+    if (!role && to.path !== '/login') {
+        next('/login');
+    }else {
+        next();
+    }
+});
+
+export default  router

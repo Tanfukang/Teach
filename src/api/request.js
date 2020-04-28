@@ -5,6 +5,7 @@ import Base64 from '../utils/Base64';
 
 export default function request(){
 
+
 axios.defaults.baseURL = 'http://192.168.1.188:12';      //默认地址
 axios.defaults.headers.post['Content-Type'] = 'application/json';   //默认请求头
 axios.defaults.timeout = 5000;

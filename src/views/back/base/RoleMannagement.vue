@@ -9,7 +9,7 @@
         </div>
         <el-card class="box-card max">
             <div slot="header" class="clearfix">
-                <el-button class="btn" type="text" @click="NewRole()">
+                <el-button class="btn" type="text" @click="newRole()">
                     <i class="el-icon-circle-plus-outline"></i>
                     新增角色
                 </el-button>
@@ -17,111 +17,255 @@
             </div>
             <div class="item">
                 <el-table :data="tableData" style="width: 100%">
-                    <el-table-column label="#" type="index" width="100"></el-table-column>
-                    <el-table-column label="班级名称">
+                    <el-table-column type="index" label="#" width="200px"></el-table-column>
+                    <el-table-column label="角色名称">
                         <template slot-scope="scope">
-                            <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                            <span>{{ scope.row.userTypeTypeName }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
                             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)"  :disabled="scope.row.disable == true ? true : false">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
         </el-card>
-        <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogFormVisible" center width="20%">
-            <el-form :model="form">
-                <el-form-item label="角色名称" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+        <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogFormVisible" center width="20%" @close="reset(ruleForm)">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" status-icon class="demo-ruleForm">
+                <el-form-item label="学生名称" prop="name" :label-width="formLabelWidth">
+                    <el-input v-model="ruleForm.name"></el-input>
                 </el-form-item>
+                <div class="submitbtn">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="submitForm(ruleForm)">{{ oper }}</el-button>
+                </div>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">{{ oper }}</el-button>
-            </div>
         </el-dialog>
     </div>
 </template>
 
 <script>
+import request from '@/api/Role';
 import Sortable from 'sortablejs';
 export default {
     data() {
         return {
-            checked: true,
+            checked: false,
             dialogFormVisible: false,
-            form: {
+            ruleForm: {
+                id: '',
                 name: ''
             },
             titleMap: {
                 addEquipment: '新增角色信息',
                 editEquipment: '修改角色信息'
             },
+            rules: {
+                name: [
+                    { required: true, message: '请输入角色名称', trigger: 'blur' },
+                    { min: 2, max: 20, message: '不低于两位字符', trigger: 'blur' }
+                ]
+            },
             //新增和编辑弹框标题
             dialogStatus: '',
+            //按钮改变状态
             oper: '',
-            tableData: [
-                {
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                },
-                {
-                    date: '2016-05-04',
-                    name: '啦啦啦',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                },
-                {
-                    date: '2016-05-01',
-                    name: '止血无忧',
-                    address: '上海市普陀区金沙江路 1519 弄'
-                },
-                {
-                    date: '2016-05-03',
-                    name: '企鹅企鹅',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }
-            ],
-            formLabelWidth: '100px'
+            //初始数据渲染
+            tableData: [],
+            formLabelWidth: '100px',
+            //表格行下标
+            index: '',
+            //拖拽之心
+            order:''
         };
     },
-    created() {},
-    mounted() {
-        this.$nextTick(() => {
-            setTimeout(() => {
-                this.rowDrop();
-            }, 100);
+    created() {
+        request.allRole().then(res => {
+            this.tableData = res.data;
+            console.log(res.data)
         });
     },
+    // mounted() {
+    //     this.rowDrop();
+    // },
+    watch:{
+       checked(){
+           if (this.checked) {
+              this.rowDrop(); 
+           }else{
+               this.order.destroy();
+           }
+       } 
+    },
     methods: {
-        //行拖拽
+        //表格行拖拽
         rowDrop() {
             const tbody = document.querySelector('.el-table__body-wrapper tbody');
             const _this = this;
-
-            Sortable.create(tbody, {
-                onEnd({ newIndex, oldIndex }) {
-                    const currRow = _this.tableData.splice(oldIndex, 1)[0];
-                    _this.tableData.splice(newIndex, 0, currRow);
+            this.order = Sortable.create(tbody, {
+                animation: 180,
+                onUpdate: function(event) {
+                    let newIndex = event.newIndex,
+                        oldIndex = event.oldIndex,
+                        $tr = tbody.children[newIndex],
+                        $oldtr = tbody.children[oldIndex];
+                    // 先删除移动的节点
+                    tbody.removeChild($tr);
+                    if (newIndex > oldIndex) {
+                        tbody.insertBefore($tr, $oldtr);
+                    } else {
+                        tbody.insertBefore($tr, $oldtr.nextSibling);
+                    }
+                    let item = _this.tableData.splice(oldIndex, 1);
+                    _this.tableData.splice(newIndex, 0, item[0]);
+                    //更新视图操作后的数据
+                    let newTableData = [];
+                    //拖拽后拿到的序号和id
+                    let upData = [];
+                    let array = _this.tableData;
+                    array.forEach((item, index) => {
+                        item.userTypeSortNo = index;
+                        newTableData.push(item);
+                        //保存最新的序列数据
+                        upData.push({
+                            userTypeId: item.userTypeId,
+                            userTypeSortNo: item.userTypeSortNo
+                        });
+                    });
+                    _this.tableData = newTableData;
+                    _this.orderUpate(upData);
                 }
             });
         },
-        NewRole() {
+        //新增角色
+        newRole() {
             this.dialogStatus = 'addEquipment';
             this.oper = '添加';
+            this.ruleForm.name = '';
             this.dialogFormVisible = true;
         },
+        //添加提交
+        addRole(formName) {
+            request
+                .addRole({
+                    userRoleName: formName.name
+                })
+                .then(res => {
+                    console.log(res);
+                    if (res.data.code === -2) {
+                        this.$message.warning('角色名已存在');
+                        return false;
+                    } else if (res.data.code === 1) {
+                        this.$message.success('添加成功');
+                        this.tableData.unshift(res.data.data);
+                        this.dialogFormVisible = false;
+                    } else {
+                        this.$message.error('添加失败');
+                    }
+                })
+                .catch(error => {
+                    this.$message.error('添加失败');
+                });
+        },
+        // 关闭清空表单
+        reset(ruleForm) {
+            this.$refs['ruleForm'].resetFields();
+        },
+        //新增|修改提交
+        submitForm(formName) {
+            this.$refs.ruleForm.validate(valid => {
+                if (valid) {
+                    if (this.oper === '添加') {
+                        this.addRole(formName);
+                    } else {
+                        this.alterRole(formName);
+                    }
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        //修改角色
         handleEdit(index, row) {
-            console.log(index, row);
+            this.index = index;
             this.dialogFormVisible = true;
             this.dialogStatus = 'editEquipment';
             this.oper = '修改';
+            this.ruleForm.id = row.userTypeId;
+            this.ruleForm.name = row.userTypeTypeName;
         },
+        // 修改提交
+        alterRole(formName) {
+            request
+                .AlterRole({
+                    id: this.ruleForm.id,
+                    userRoleName: formName.name
+                })
+                .then(res => {
+                    if (res.data.code === 0) {
+                        this.$message.warning('数据没有变化');
+                        return false;
+                    } else if (res.data.code === 1) {
+                        this.$message.success('修改成功');
+                        this.tableData[this.index].userTypeTypeName = formName.name;
+                        this.dialogFormVisible = false;
+                    } else {
+                        this.$message.error('修改失败');
+                    }
+                })
+                .catch(error => {
+                    this.$message.error('修改失败');
+                });
+        },
+        //删除角色
         handleDelete(index, row) {
-            console.log(index, row);
+            this.$confirm('确定要删除?', '删除提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            })
+                .then(() => {
+                    request
+                        .DeleteRole({
+                            userRoleId: row.userTypeId
+                        })
+                        .then(res => {
+                            console.log(res);
+                            if (res.data.code === 1) {
+                                this.tableData.splice(index, 1);
+                                this.$message.success('删除成功');
+                            } else {
+                                this.$message.error('删除失败');
+                            }
+                        })
+                        .catch(error => {
+                            this.$message.error('删除失败');
+                        });
+                })
+                .catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+        },
+        //更新拖动列表数据
+        orderUpate(updata) {
+            request
+                .OrderRole(updata)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success('更改成功');
+                    } else {
+                        this.$message.error('更改失败');
+                    }
+                })
+                .catch(error => {
+                    this.$message.error('更改失败');
+                });
         }
     }
 };
@@ -131,5 +275,9 @@ export default {
 .btn {
     margin-right: 20px;
     font-size: 15px;
+}
+.submitbtn {
+    width: 100%;
+    text-align: center;
 }
 </style>

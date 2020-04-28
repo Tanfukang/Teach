@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import request from '../../../api/ChangePass';
+import request from '@/api/ChangePass';
 
 export default {
     name: '',

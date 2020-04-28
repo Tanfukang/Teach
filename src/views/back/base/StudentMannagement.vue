@@ -62,7 +62,7 @@
         <el-dialog :title="titleMap[dialogStatus]" :visible.sync="dialogFormVisible" center width="20%" @close="reset(ruleForm)">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" status-icon class="demo-ruleForm">
                 <el-form-item label="班级" prop="region" :label-width="formLabelWidth">
-                    <el-select v-model="value" placeholder="请选择" @change="SelectClass">
+                    <el-select v-model="value" placeholder="请选择" @change="selectClass">
                         <el-option :label="item.className" :value="item.classId" v-for="item in classList" :key="item.classId"></el-option>
                     </el-select>
                 </el-form-item>
@@ -94,8 +94,8 @@
 </template>
 
 <script>
-import request from '../../../api/Student';
-import { formatDate } from '../../../utils/data';
+import request from '@/api/Student';
+import { formatDate } from '@/utils/data';
 export default {
     name: '',
     data() {
@@ -115,7 +115,9 @@ export default {
         };
         return {
             class: '',
+            // 默认显示的班级
             classId: '311',
+
             value: '',
             dialogFormVisible: false,
             titleMap: {
@@ -154,13 +156,15 @@ export default {
             formLabelWidth: '80px',
             selct: '',
             classList: '',
+            //基础表格数据渲染
             tableData: [],
-            index:''
+            //表格每行的下标
+            index:''    
         };
     },
     methods: {
         // 选择班级
-        SelectClass(rowItem) {
+        selectClass(rowItem) {
             request
                 .ClassAll({
                     classId: rowItem
@@ -177,7 +181,7 @@ export default {
             this.$refs.ruleForm.validate(valid => {
                 if (valid) {
                     if (this.oper === '添加') {
-                        this.NewStudent(formName);
+                        this.newStudent(formName);
                     }else{
                         this.alterStudent(formName);
                     }
@@ -188,7 +192,7 @@ export default {
             });
         },
         //新增学生
-        NewStudent(formName){
+        newStudent(formName){
             request.AddStudent({
                 stuName:formName.name,
                 stuClassId:this.value,
@@ -294,12 +298,11 @@ export default {
         addStudent() {
             this.dialogStatus = 'addEquipment';
             this.oper = '添加';
-            this.dialogFormVisible = true;
-            // this.ruleForm.region = "";
+            this.dialogFormVisible = true;;
             this.ruleForm.name ="";
             this.ruleForm.sledate = "";
             this.ruleForm.phone ="";
-            this.ruleForm.resource = "";
+            this.ruleForm.resource = "男";
             this.ruleForm.password = "";
         }
     },
