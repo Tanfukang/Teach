@@ -9,7 +9,7 @@
         </div>
         <el-card class="box-card max">
             <div slot="header" class="clearfix">
-                <el-select v-model="value" placeholder="请选择班级" @change="SelectClass">
+                <el-select v-model="value" placeholder="请选择班级" @change="selectClass">
                     <el-option :label="item.className" :value="item.classId" v-for="item in classList" :key="item.classId"></el-option>
                 </el-select>
                 <el-button class="btn" type="text" @click="addStudent()">
