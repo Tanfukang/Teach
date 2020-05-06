@@ -64,14 +64,7 @@
                     <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="专业课程" :label-width="formLabelWidth">
-                    <el-select v-model="form.classCourseId" placeholder="请选择">
-                        <el-option
-                            :label="item.courseName"
-                            :value="item.courseId"
-                            v-for="item in allLessons"
-                            :key="item.courseId"
-                        ></el-option>
-                    </el-select>
+                    <SelectCourse v-model="course"></SelectCourse>
                 </el-form-item>
                 <el-form-item label="授课老师" :label-width="formLabelWidth">
                     <el-select v-model="form.teacherId" placeholder="请选择">
@@ -89,6 +82,7 @@
 
 <script>
 import { formatDate } from '@/utils/data';
+import SelectCourse from '../../../components/select/SelectCourse'
 import request from '@/api/Class';
 export default {
     name: '',
@@ -105,6 +99,10 @@ export default {
             },
             //新增和编辑弹框标题
             dialogStatus: '',
+            course:{
+                courseId:'',
+                courseName:''    
+            },
             oper: '',
             form: {
                 name: '',
@@ -117,6 +115,7 @@ export default {
             formLabelWidth: '100px'
         };
     },
+    components:{ SelectCourse },
     methods: {
         // 点击添加
         addClass() {
@@ -124,7 +123,8 @@ export default {
             this.oper = '添加';
             this.dialogFormVisible = true;
             this.form.name = '';
-            this.form.classCourseId = '';
+            this.course.courseId = '';
+            this.course.courseName = '';
             this.form.teacherId = '';
         },
         //添加后提交
@@ -132,7 +132,7 @@ export default {
             request
                 .AddClass({
                     className: form.name,
-                    classCourseId: form.classCourseId,
+                    classCourseId: this.course.courseId,
                     classTeacherId: form.teacherId
                 })
                 .then(res => {
@@ -153,14 +153,19 @@ export default {
         },
         //点击修改
         handleEdit(index, row) {
+            console.log(row)
             this.dialogFormVisible = true;
             this.dialogStatus = 'editEquipment';
             this.oper = '修改';
             this.form.name = row.className;
-            this.form.course = row.courseName;
+            this.course={
+                courseName : row.courseName,
+                courseId : row.classCourseId
+            };
+            // this.clas.courseName = row.courseName;
             this.form.teacher = row.userName;
             this.form.classId = row.classId;
-            this.form.classCourseId = row.classCourseId;
+            // this.clas.courseId = row.classCourseId;
             this.form.teacherId = row.classTeacherId;
         },
         //修改后提交
@@ -169,7 +174,7 @@ export default {
                 .AlterClass({
                     classId: this.form.classId,
                     className: form.name,
-                    classCourseId: this.form.classCourseId,
+                    classCourseId: this.course.courseId,
                     classTeacherId: this.form.teacherId
                 })
                 .then(res => {
@@ -192,13 +197,13 @@ export default {
         //提交
         submit(form) {
             if (this.oper === '添加') {
-                if ((form.name && form.classCourseId && form.teacherId) === '') {
+                if ((form.name && this.course.courseId && form.teacherId) === '') {
                     this.$message.error('请提交完整的班级信息');
                 } else {
                     this.addSubmit(form);
                 }
             } else {
-                if ((form.name && form.classCourseId && form.teacherId) === '') {
+                if ((form.name && this.course.courseId && form.teacherId) === '') {
                     this.$message.error('请提交完整的班级信息');
                 } else {
                     this.alterSubmit(form);
@@ -239,7 +244,6 @@ export default {
                         message: '已取消删除'
                     });
                 });
-            console.log(index, row);
         }
     },
     // 格式化时间戳格式

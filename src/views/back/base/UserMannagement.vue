@@ -20,8 +20,8 @@
                     }}</el-radio>
                 </el-radio-group>
             </div>
-            <div class="item">
-                <el-table :data="radio" style="width: 100%">
+            <div class="item max">
+                <el-table :data="radio"  class="tableClass" >
                     <el-table-column type="index" label="#"></el-table-column>
                     <el-table-column label="用户名称">
                         <template slot-scope="scope">
@@ -138,7 +138,8 @@ export default {
                 password: '',
                 sex: '',
                 role: '',
-                Usertypeid: ''
+                Usertypeid: '',
+                userTypeTypeName:""
             },
             rules: {
                 name: [
@@ -175,7 +176,6 @@ export default {
     // 角色选项卡分类
     methods: {
         navTab(index){
-            console.log(this.radio)
             this.tab = index;
             if(index === "全部"){
                this.radio = this.tableData
@@ -200,9 +200,11 @@ export default {
             this.ruleForm.password = '';
             this.ruleForm.sex = '';
             this.ruleForm.role = this.tab.userTypeId;
+            this.userTypeTypeName=this.tab.userTypeTypeName;
         },
         //新增提交
         newUser(formName) {
+            
             request
                 .addUser({
                     userName: formName.name,
@@ -221,17 +223,19 @@ export default {
                         let UserData = res.data.data;
                         UserData.userTypeTypeName = found.userTypeTypeName;
                         UserData.disableDelete = false;
-                        console.log(UserData)
-                        this.radio.push(UserData);
+                        //判断是否是当前新增的列的数据，如果不是，不需要渲染到当前列中
+                        if(formName.role==this.radio[0].userUserTypeId){
+                            this.radio.push(UserData);
+                        }
+                        //新增的数据需要push到所有数据中
                         this.tableData.push(UserData);
-                        
                 
                     } else {
-                        this.$message.error('添加失败');
+                        this.$message.error(res.data.message);
                     }
                 })
                 .catch(error => {
-                    this.$message.error('添加失败');
+                    this.$message.error("添加失败");
                 });
         },
         //修改用户
@@ -246,10 +250,10 @@ export default {
             this.ruleForm.sex = row.userSex;
             this.ruleForm.role = row.userUserTypeId;
             this.index = index;
+           
         },
         //修改提交
         alterUser(formName) {
-            console.log(formName)
             request
                 .AlterTeacher({
                     userUid: this.ruleForm.UserUid,
@@ -266,14 +270,36 @@ export default {
                     } else if (res.data.code === 1) {
                         this.$message.success('修改成功');
                         this.dialogFormVisible = false;
-                        this.radio[this.index].userName = formName.name;
-                        this.radio[this.index].userMobile = formName.phone;
-                        this.radio[this.index].userPassword = formName.password;
-                        this.radio[this.index].userSex = formName.sex;
+                        //获取分类中文名称
                         let found = this.UserClass.find(item => {
                             return item.userTypeId === formName.role;
                         });
-                        this.radio[this.index].userTypeTypeName = found.userTypeTypeName;
+                        //由于是修改数据，则修改总表数据
+                        var  table=[];
+                        this.tableData.forEach((item,Upindex )=> {
+                            if(item.userUid == this.ruleForm.UserUid){
+                                item.userMobile=formName.phone;
+                                item.userName=formName.name;
+                                item.userSex=formName.sex;
+                                item.userPassword=formName.password;
+                                item.userUserTypeId=this.ruleForm.role;
+                                item.userTypeTypeName=found.userTypeTypeName;
+                                table.push(item);
+                            }else{
+                                table.push(item);
+                            }
+                        });
+                        this.tableData=table;
+                        if(this.tab!="全部"&&this.tab!=""){
+                            var radiodata =[];
+                            this.tableData.forEach(item => {
+                            if(item.userUserTypeId === this.tab.userTypeId){
+                                radiodata.push(item)
+                            }
+                            });
+                            this.radio = radiodata
+                        }
+
                     } else {
                         this.$message.error('修改失败');
                     }
@@ -303,7 +329,6 @@ export default {
         },
         //删除用户
         handleDelete(index, row) {
-            console.log(index, row);
             this.$confirm('确定要删除?', '删除提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -315,10 +340,22 @@ export default {
                             uid: row.userUid
                         })
                         .then(res => {
-                            console.log(res);
                             if (res.data.code === 1) {
-                                this.$message.success('删除成功');
-                                this.tableData.splice(index, 1);
+                                 //删除总表数据
+                                this.tableData.forEach((item,findex )=> {
+                                    if(item.userUid == row.userUid){
+                                        this.tableData.splice(findex, 1);
+                                    }
+                                });
+                                //删除分类数据
+                                this.radio.forEach((item,findex )=> {
+                                    if(item.userUid == row.userUid){
+                                        this.radio.splice(findex, 1);
+                                    }
+                                });
+                                this.$message.success(res.data.message);
+                                
+
                             } else {
                                 this.$message.warning('删除失败');
                             }
@@ -339,6 +376,10 @@ export default {
 </script>
 
 <style scoped >
+/deep/.tableClass{
+    width: 100%;
+    height: 100% !important;
+}
 .adduser {
     margin-right: 30px;
     font-size: 15px;

@@ -84,7 +84,7 @@ Vue.use(Router);
 // 使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | 教学管理系统`;
-    const role = localStorage.getItem('userToken');
+    const role = sessionStorage.getItem('userData');
     if (!role && to.path !== '/login') {
         next('/login');
     }else {

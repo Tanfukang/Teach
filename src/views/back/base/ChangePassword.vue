@@ -73,13 +73,8 @@ export default {
         };
     },
     created() {
-        let cookies = this.Cookie.getCookie('user');
         let userData = JSON.parse(sessionStorage.getItem('userData'));
         this.userId = userData.userUid;
-        if (cookies) {
-            let userPass = JSON.parse(this.Base64.decode(cookies));
-            this.ruleForm.FormerPass = userPass.password;
-        }
     },
     methods: {
         //修改密码
@@ -121,4 +116,4 @@ export default {
 };
 </script>
 
-<style lang="" scoped></style>
+<style  scoped></style>

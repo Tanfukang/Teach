@@ -84,7 +84,6 @@ export default {
     created() {
         request.allRole().then(res => {
             this.tableData = res.data;
-            console.log(res.data)
         });
     },
     // mounted() {
@@ -153,12 +152,11 @@ export default {
                     userRoleName: formName.name
                 })
                 .then(res => {
-                    console.log(res);
                     if (res.data.code === -2) {
-                        this.$message.warning('角色名已存在');
+                        this.$message.warning(res.data.message);
                         return false;
                     } else if (res.data.code === 1) {
-                        this.$message.success('添加成功');
+                        this.$message.success(res.data.message);
                         this.tableData.unshift(res.data.data);
                         this.dialogFormVisible = false;
                     } else {
@@ -206,7 +204,7 @@ export default {
                 })
                 .then(res => {
                     if (res.data.code === 0) {
-                        this.$message.warning('数据没有变化');
+                        this.$message.warning(res.data.message);
                         return false;
                     } else if (res.data.code === 1) {
                         this.$message.success('修改成功');
@@ -233,10 +231,9 @@ export default {
                             userRoleId: row.userTypeId
                         })
                         .then(res => {
-                            console.log(res);
                             if (res.data.code === 1) {
                                 this.tableData.splice(index, 1);
-                                this.$message.success('删除成功');
+                                this.$message.success(res.data.message);
                             } else {
                                 this.$message.error('删除失败');
                             }
@@ -258,9 +255,9 @@ export default {
                 .OrderRole(updata)
                 .then(res => {
                     if (res.data.code === 1) {
-                        this.$message.success('更改成功');
+                        this.$message.success(res.data.message);
                     } else {
-                        this.$message.error('更改失败');
+                        this.$message.error(res.data.message);
                     }
                 })
                 .catch(error => {
@@ -275,6 +272,13 @@ export default {
 .btn {
     margin-right: 20px;
     font-size: 15px;
+}
+.max {
+    max-height: 500px;
+    overflow-y: auto;
+}
+.max::-webkit-scrollbar {
+    width: 0;
 }
 .submitbtn {
     width: 100%;
