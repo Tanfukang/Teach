@@ -6,7 +6,7 @@
                 <el-input v-model="ruleForm.paper" placeholder="请输入试卷名称"></el-input>
             </el-form-item>
             <el-form-item label="课程名称" prop="course">
-                <SelectCourse v-model="course"></SelectCourse>
+                <SelectCourse v-model="course" ref="fous"></SelectCourse>
             </el-form-item>
             <div class="submitbtn">
                 <el-button type="primary" @click="submitForm(ruleForm)">下一步</el-button>
@@ -37,7 +37,6 @@ export default {
                     { required: true, message: '请输入试卷名称', trigger: 'blur' },
                     { min: 2, max: 18, message: '请输入正确的试卷名', trigger: 'blur' }
                 ]
-                // course: [{ required: true,message: '请选择课程名称', trigger: 'blur' }]
             }
         };
     },
@@ -47,9 +46,13 @@ export default {
     created() {},
     methods: {
         submitForm(formName) {
-            console.log(formName, this.course);
             this.$refs.ruleForm.validate(valid => {
                 if (valid) {  
+                    if (!this.course.courseId) {
+                        this.$message.error('请选择课程名称');
+                        this.$refs.fous.$refs.focs.focus()
+                        return false;
+                    }
                     this.makePaperInfo();
                 } else {
                     console.log('error submit!!');
@@ -75,7 +78,6 @@ export default {
                 )
                 .then(res => {
                     if (res.data.code === 1) {
-                        console.log(res)
                         this.$message.success(res.data.message);
                         sessionStorage.setItem('paperId',res.data.data.testPaperId)   //储存试卷id
                         setTimeout(() => {

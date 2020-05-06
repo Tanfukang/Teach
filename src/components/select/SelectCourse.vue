@@ -2,7 +2,7 @@
 courseId(课程id)
 courseName(课程名字)  -->
 <template>
-    <el-select class="sele" v-model="classId" placeholder="请选择专业课程" >
+    <el-select class="sele" v-model="classId" placeholder="请选择专业课程" ref="focs">
         <el-option v-for="item in getAllCourse" :key="item.courseId" :label="item.courseName" :value="item.courseId"></el-option>
     </el-select>
 </template>

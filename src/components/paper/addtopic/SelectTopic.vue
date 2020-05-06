@@ -1,13 +1,13 @@
 <template>
     <!-- 选择题组件 -->
     <div class="selectTopic">
-        <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-width="100px" class="demo-dynamic">
+        <el-form :model="selectTopicInfo" ref="selectTopicInfo" label-width="100px" class="demo-dynamic">
             <el-form-item prop="textarea" label="题干" :rules="[{ required: true, message: '请输题干', trigger: 'blur' }]">
-                <el-input type="textarea" autosize v-model="dynamicValidateForm.textarea"> </el-input>
+                <el-input type="textarea" autosize v-model="selectTopicInfo.textarea"> </el-input>
             </el-form-item>
             <el-form-item
                 class="context"
-                v-for="(domain, index) in dynamicValidateForm.domains"
+                v-for="(domain, index) in selectTopicInfo.domains"
                 :key="domain.key"
                 :prop="'domains.' + index + '.value'"
                 :rules="{
@@ -28,9 +28,9 @@
                 <el-input-number v-model="num" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
             </el-form-item>
             <el-form-item>
-                <el-button round @click="resetForm('dynamicValidateForm')">重置</el-button>
+                <el-button round @click="resetForm('selectTopicInfo')">重置</el-button>
                 <el-button type="info" round @click="addDomain">新增题目</el-button>
-                <el-button type="primary" round icon="el-icon-document-checked" @click="submitForm('dynamicValidateForm')"
+                <el-button type="primary" round icon="el-icon-document-checked" @click="submitForm('selectTopicInfo')"
                     >保存题目</el-button
                 >
             </el-form-item>
@@ -39,39 +39,15 @@
 </template>
 
 <script>
+import request from '@/api/Paper';
 export default {
     data() {
         return {
             num: 2,
             input: '',
+            correct:true,
             // 选择题
-            choice: [
-                {
-                    topicId: 1,
-                    check: false,
-                    stide: 'A',
-                    inputtype: 'text'
-                },
-                {
-                    topicId: 2,
-                    check: false,
-                    stide: 'B',
-                    inputtype: 'text'
-                },
-                {
-                    topicId: 3,
-                    check: false,
-                    stide: 'C',
-                    inputtype: 'text'
-                },
-                {
-                    topicId: 4,
-                    check: false,
-                    stide: 'D',
-                    inputtype: 'text'
-                }
-            ],
-            dynamicValidateForm: {
+            selectTopicInfo: {
                 domains: [
                     {
                         checked: false,
@@ -91,7 +67,31 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
-                    console.log(this.dynamicValidateForm);
+                    //正确答案
+                   let chooseQuestion = this.selectTopicInfo.domains.map((item)=>{
+                        return {
+                            cqOption:item.value,
+                            cqIsRight:item.checked
+                        }
+                    })
+                    //添加题目参数
+                    let addInfo = {
+                        tpqPaperId:sessionStorage.getItem('paperId'),           //试卷编号
+                        tpqScore:this.num,                                      //分值
+                        tpqQuestion:{                       
+                            questionTitle:this.selectTopicInfo.textarea,        //题干
+                            questionTypeId:1,                                   //题目类型
+                            chooseQuestion                                      //题目内容                      
+                        }
+                    }
+                    request.addTopic(addInfo)
+                    .then(res=>{
+                        if (res.data.code === 1) {
+                            this.$message.success(res.data.message);
+                        }else{
+                            this.$message.warning(res.data.message);
+                        }
+                    })
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -100,21 +100,21 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-
-            this.dynamicValidateForm.domains.forEach((item,index)=>{
+            this.selectTopicInfo.domains.forEach((item,index)=>{
                 item.checked = false;
             })
         },
         removeDomain(item) {
-            var index = this.dynamicValidateForm.domains.indexOf(item);
+            var index = this.selectTopicInfo.domains.indexOf(item);
             if (index > 1) {
-                this.dynamicValidateForm.domains.splice(index, 1);
+                this.selectTopicInfo.domains.splice(index, 1);
             }
         },
         addDomain() {
-            if (this.dynamicValidateForm.domains.length < 6) {
-                this.dynamicValidateForm.domains.push({
+            if (this.selectTopicInfo.domains.length < 6) {
+                this.selectTopicInfo.domains.push({
                     value: '',
+                    checked:false,
                     key: Date.now()
                 });
             }

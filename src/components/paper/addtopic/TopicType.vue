@@ -3,7 +3,7 @@ typeName（题目名称）
 typeId（题目id）-->
 <template>
     <div class="topicType">
-        <el-radio-group v-model="radio">
+        <el-radio-group v-model="radioSelcet">
             <el-radio :label="item.typeId" v-for="item in proType" :key="item.typeId">{{ item.typeName }}</el-radio>
         </el-radio-group>
     </div>
@@ -22,11 +22,14 @@ export default {
         default: false
     },
     props:{
-
+        radio:{
+            require:true,
+            type:Number
+        }
     },
     data() {
         return {
-            radio: 1,
+            radioSelcet:'',
             //问题类型
             proType: []
         };
@@ -36,6 +39,14 @@ export default {
         request.problemTypes().then(res => {
             this.proType = res.data;
         });
+        this.$nextTick(()=>{
+            this.radioSelcet = this.radio;
+        })
+    },
+    watch:{
+       radioSelcet(to){
+           this.$emit('changeRadio',to)
+       } 
     },
     methods: {}
 };
