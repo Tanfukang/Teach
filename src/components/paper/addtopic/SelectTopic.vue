@@ -67,6 +67,15 @@ export default {
         submitForm(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {
+                  let corr  =  this.selectTopicInfo.domains.find(item => item.checked === this.correct); //是否有正确答案
+                  let newArr = new Set(Array.from(this.selectTopicInfo.domains));          //答案重复操作
+                    if(!corr){
+                        this.$message.warning('请选择正确答案');
+                        return
+                    }else if(newArr.length !== this.selectTopicInfo.domains.length){
+                         this.$message.warning('答案不能重复');
+                         return
+                    }
                     //正确答案
                    let chooseQuestion = this.selectTopicInfo.domains.map((item)=>{
                         return {
@@ -88,6 +97,7 @@ export default {
                     .then(res=>{
                         if (res.data.code === 1) {
                             this.$message.success(res.data.message);
+                            this.resetForm()
                         }else{
                             this.$message.warning(res.data.message);
                         }
@@ -98,18 +108,21 @@ export default {
                 }
             });
         },
+        //重置表单
         resetForm(formName) {
             this.$refs[formName].resetFields();
             this.selectTopicInfo.domains.forEach((item,index)=>{
                 item.checked = false;
             })
         },
+        //删除题目
         removeDomain(item) {
             var index = this.selectTopicInfo.domains.indexOf(item);
             if (index > 1) {
                 this.selectTopicInfo.domains.splice(index, 1);
             }
         },
+        //添加题目
         addDomain() {
             if (this.selectTopicInfo.domains.length < 6) {
                 this.selectTopicInfo.domains.push({

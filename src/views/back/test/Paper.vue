@@ -39,7 +39,7 @@ export default {
     data() {
         return {
             //默认选中第一个步骤
-            active: 0,
+            active: 1,
             // label对齐方式
             labelPosition: 'top',
             ruleForm: {
