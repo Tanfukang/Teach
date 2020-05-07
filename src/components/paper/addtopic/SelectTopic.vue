@@ -68,13 +68,16 @@ export default {
             this.$refs[formName].validate(valid => {
                 if (valid) {
                   let corr  =  this.selectTopicInfo.domains.find(item => item.checked === this.correct); //是否有正确答案
-                  let newArr = new Set(Array.from(this.selectTopicInfo.domains));          //答案重复操作
+                  let Arr = [];
+                   this.selectTopicInfo.domains.map((item)=>{
+                      return Arr.push(item.value)
+                  })
                     if(!corr){
                         this.$message.warning('请选择正确答案');
                         return
-                    }else if(newArr.length !== this.selectTopicInfo.domains.length){
-                         this.$message.warning('答案不能重复');
-                         return
+                    }else if(Arr.length !== [...new Set(Arr)].length){ //答案重复操作
+                        this.$message.warning('答案不能重复');
+                        return
                     }
                     //正确答案
                    let chooseQuestion = this.selectTopicInfo.domains.map((item)=>{
@@ -97,7 +100,7 @@ export default {
                     .then(res=>{
                         if (res.data.code === 1) {
                             this.$message.success(res.data.message);
-                            this.resetForm()
+                            this.resetForm(formName);
                         }else{
                             this.$message.warning(res.data.message);
                         }

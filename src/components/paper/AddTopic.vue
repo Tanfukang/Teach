@@ -43,7 +43,7 @@ import TopicType from './addtopic/TopicType';       //问题类型组件
 export default {
     data() {
         return {
-            radio:2,
+            radio:1,
             input: '',
             check: []            
         };
